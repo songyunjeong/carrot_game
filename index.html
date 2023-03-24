@@ -5,17 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Catch Carrots!!</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
-      integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
+    <script src="https://kit.fontawesome.com/774557dd8b.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="style.css" />
     <script src="main.js" defer></script>
   </head>
   <body>
+    <audio class="bg_sound" src="sound/bg.mp3"></audio>
+    <audio class="alert_sound" src="sound/alert.wav"></audio>
+
     <section class="wrap">
       <div class="background_image">
         <img src="img/background.png" alt="" />
@@ -26,10 +23,8 @@
         <div class="counter">0</div>
       </div class="info">
       <div class="alert">
-        <div class="box">
           <button class="replay_btn btn"><i class="fa-solid fa-reply"></i></button>
           <p class="alert_txt">Replay ?</p>
-        </div >
       </div>  
     </section>
   </body>
