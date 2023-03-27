@@ -70,6 +70,14 @@ body {
   font-size: 36px;
 }
 
+/* field */
+.field {
+  width: 1500px;
+  height: 400px;
+  position: absolute;
+  bottom: 0;
+}
+
 /* alert */
 .alert {
   display: none;
