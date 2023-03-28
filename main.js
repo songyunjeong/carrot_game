@@ -1,92 +1,183 @@
-// play info
-const playBtn = document.querySelector('.play_btn');
-const bgSound = document.querySelector('.bg_sound');
-const alert = document.querySelector('.alert');
-const alertTxt = document.querySelector('.alert_txt');
-const alertSound = document.querySelector('.alert_sound');
-const counter = document.querySelector('.counter');
-const timer = document.querySelector('.timer');
-const replayBtn = document.querySelector('.replay_btn');
-let carrotCount;
+'use strict';
 
-let setTime = 10;
-const timerPlayer = () => {
-  timer.textContent = `00 : ${setTime.toString().padStart(2, '0')}`;
-  if (setTime > 0) {
-    setTime = setTime - 1;
-  }
-};
+const CARROT_SIZE = 80;
+const CARROT_COUNT = 20;
+const BUG_COUNT = 20;
+const GAME_DURATION_SEC = 20;
 
-playBtn.addEventListener('click', () => {
-  const Iplay = '<i class="fa-solid fa-play"></i>';
-  const Istop = '<i class="fa-solid fa-stop"></i>';
-  let timerInterval = setInterval(() => {
-    timerPlayer();
-  }, 1000);
-  if (playBtn.innerHTML == Iplay) {
-    playBtn.innerHTML = Istop;
-    carrotCount = 10;
-    counter.innerHTML = carrotCount;
-    bgSound.play();
-    timerInterval;
-  } else if (playBtn.innerHTML == Istop) {
-    bgSound.pause();
-    alertSound.play();
-    alert.style.display = 'flex';
-    alertTxt.innerHTML = 'Replay ?';
-    playBtn.style.display = 'none';
-  }
-});
-
-replayBtn.addEventListener('click', () => {
-  alert.style.display = 'none';
-  playBtn.style.display = 'block';
-  bgSound.play();
-});
-
-// random position
-const field = document.querySelector('.field');
+const field = document.querySelector('.game__field');
 const fieldRect = field.getBoundingClientRect();
-for (let i = 1; i <= 10; i++) {
-  const newCarrot = document.createElement('img');
-  newCarrot.src = 'img/carrot.png';
-  newCarrot.className = 'carrot' + i;
-  field.appendChild(newCarrot);
-  const x1 = Math.random() * (fieldRect.width - 80);
-  const y1 = Math.random() * (fieldRect.height - 80);
-  newCarrot.style.position = 'absolute';
-  newCarrot.style.left = `${x1}px`;
-  newCarrot.style.top = `${y1}px`;
-  newCarrot.style.cursor = 'pointer';
+const gameBtn = document.querySelector('.game__btn');
+const gameTimer = document.querySelector('.game__timer');
+const gameScore = document.querySelector('.game__score');
 
-  const newBug = document.createElement('img');
-  newBug.src = 'img/bug.png';
-  newBug.className = 'bug' + i;
-  field.appendChild(newBug);
-  const x2 = Math.random() * (fieldRect.width - 50);
-  const y2 = Math.random() * (fieldRect.height - 50);
-  newBug.style.position = 'absolute';
-  newBug.style.left = `${x2}px`;
-  newBug.style.top = `${y2}px`;
-  newBug.style.cursor = 'pointer';
+const popUp = document.querySelector('.pop-up');
+const popUpTxt = document.querySelector('.pop-up__txt');
+const popUpRefresh = document.querySelector('.pop-up__refresh');
+
+const bgSound = new Audio('sound/bg.mp3');
+const carrotSound = new Audio('sound/carrot_pull.mp3');
+const bugSound = new Audio('sound/bug_pull.mp3');
+const alertSound = new Audio('sound/alert.wav');
+const winSound = new Audio('sound/game_win.mp3');
+
+let started = false;
+let score = 0;
+let timer = undefined;
+
+field.addEventListener('click', onFieldClick);
+
+gameBtn.addEventListener('click', () => {
+  if (started) {
+    stopGame();
+  } else {
+    startGame();
+  }
+});
+
+popUpRefresh.addEventListener('click', () => {
+  startGame();
+  hidePopup();
+});
+
+function startGame() {
+  started = true;
+  initGame();
+  showStopBtn();
+  showTimerAndScore();
+  startGameTimer();
+  playSound(bgSound);
 }
 
-// click event
-for (let i = 1; i <= 10; i++) {
-  const carrot = document.querySelector('.carrot' + i);
-  const carrotSound = document.querySelector('.carrot_sound');
-  const bug = document.querySelector('.bug' + i);
-  const bugSound = document.querySelector('.bug_sound');
-  carrot.addEventListener('click', () => {
-    carrot.style.display = 'none';
-    carrotSound.play();
-    carrotCount - 1;
-    counter.innerHTML = carrotCount;
-  });
-  bug.addEventListener('click', () => {
-    bug.style.display = 'none';
-    bugSound.play();
-    alert.style.display = 'flex';
-    alertTxt.innerHTML = 'YOU LOST';
-  });
+function stopGame() {
+  started = false;
+  stopGameTimer();
+  hideGameButton();
+  showPopUpWithText('REPLAY ❓');
+  playSound(alertSound);
+  stopSound(bgSound);
+}
+
+function finishGame(win) {
+  started = false;
+  hideGameButton();
+  if (win) {
+    playSound(winSound);
+  } else {
+    playSound(bugSound);
+  }
+  stopGameTimer();
+  stopSound(bgSound);
+  showPopUpWithText(win ? 'YOU WON ' : 'YOU LOST');
+}
+
+function showStopBtn() {
+  const icon = gameBtn.querySelector('.fa-solid');
+  icon.classList.add('fa-stop');
+  icon.classList.remove('fa-play');
+  gameBtn.style.visibility = 'visible';
+}
+
+function hideGameButton() {
+  gameBtn.style.visibility = 'hidden';
+}
+
+function showTimerAndScore() {
+  gameTimer.style.visibility = 'visible';
+  gameScore.style.visibility = 'visible';
+}
+
+function startGameTimer() {
+  let remainingTimeSec = GAME_DURATION_SEC;
+  updateTimerText(remainingTimeSec);
+  timer = setInterval(() => {
+    if (remainingTimeSec <= 0) {
+      clearInterval(timer);
+      finishGame(CARROT_COUNT === score);
+      return;
+    }
+    updateTimerText(--remainingTimeSec);
+  }, 1000);
+}
+
+function stopGameTimer() {
+  clearInterval(timer);
+}
+
+function updateTimerText(time) {
+  const minutes = Math.floor(time / 60);
+  const seconds = time % 60;
+  gameTimer.innerText = `${minutes.toString().padStart(2, '0')} : ${seconds
+    .toString()
+    .padStart(2, '0')}`;
+}
+
+function showPopUpWithText(text) {
+  popUpTxt.innerText = text;
+  popUp.classList.remove('pop-up--hide');
+}
+
+function hidePopup() {
+  popUp.classList.add('pop-up--hide');
+}
+
+function initGame() {
+  score = 0;
+  field.innerHTML = '';
+  gameScore.innerText = CARROT_COUNT;
+  addItem('carrot', CARROT_COUNT, 'img/carrot.png');
+  addItem('bug', BUG_COUNT, 'img/bug.png');
+}
+
+function onFieldClick(event) {
+  if (!started) {
+    return;
+  }
+  const target = event.target;
+  if (target.matches('.carrot')) {
+    target.remove();
+    score++;
+    playSound(carrotSound);
+    updateScoreBoard();
+    if (score == CARROT_COUNT) {
+      finishGame(true);
+    }
+  } else if (target.matches('.bug')) {
+    finishGame(false);
+  }
+}
+
+function playSound(sound) {
+  sound.currentTime = 0;
+  sound.play();
+}
+
+function stopSound(sound) {
+  sound.pause();
+}
+
+function updateScoreBoard() {
+  gameScore.innerText = CARROT_COUNT - score;
+}
+
+function addItem(className, count, imgPath) {
+  const x1 = 0;
+  const y1 = 0;
+  const x2 = fieldRect.width - CARROT_SIZE;
+  const y2 = fieldRect.height - CARROT_SIZE;
+  for (let i = 0; i < count; i++) {
+    const item = document.createElement('img');
+    item.setAttribute('class', className);
+    item.setAttribute('src', imgPath);
+    item.style.position = 'absolute';
+    const x = randomNumber(x1, x2);
+    const y = randomNumber(y1, y2);
+    item.style.left = `${x}px`;
+    item.style.top = `${y}px`;
+    field.appendChild(item);
+  }
+}
+
+function randomNumber(min, max) {
+  return Math.random() * (max - min) + min;
 }

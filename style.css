@@ -3,49 +3,44 @@ body {
   margin: 0;
 }
 
-.wrap {
-  width: 1500px;
-  margin: 80px auto;
-  position: relative;
-}
-
-/* background_image */
-.background_image {
-  border-radius: 20px;
-  overflow: hidden;
-}
-
-.background_image img {
-  width: 1500px;
-}
-
-/* btn */
-.btn {
-  width: 65px;
-  height: 65px;
-  background-color: blanchedalmond;
-  border: 3px solid black;
-  border-radius: 10px;
-  font-size: 32px;
+button {
+  border: none;
+  outline: none;
   cursor: pointer;
 }
 
-.btn:hover {
-  scale: 1.1;
-}
-
-/* info */
-.info {
+.game {
   display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  width: 150px;
-  position: absolute;
-  top: 30px;
-  left: calc(50% - 150px / 2);
+  flex-direction: column;
+  width: 1000px;
+  height: 600px;
+  background: url(img/background.png) center/cover no-repeat;
+  border-radius: 20px;
+  margin: 50px auto;
 }
 
-.info .timer {
+header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.btn {
+  width: 65px;
+  height: 65px;
+  background-color: wheat;
+  border: 3px solid black;
+  border-radius: 10px;
+  font-size: 32px;
+  transition: transform 200ms ease-in;
+}
+
+.btn:hover {
+  transform: scale(1.1);
+}
+
+.game__timer {
   width: 150px;
   height: 50px;
   background-color: white;
@@ -56,9 +51,11 @@ body {
   font-size: 32px;
   margin-top: 10px;
   margin-bottom: 15px;
+  visibility: hidden;
+  user-select: none;
 }
 
-.info .counter {
+.game__score {
   width: 60px;
   height: 60px;
   border-radius: 50%;
@@ -68,41 +65,50 @@ body {
   line-height: 60px;
   color: white;
   font-size: 36px;
+  visibility: hidden;
+  user-select: none;
 }
 
-/* field */
-.field {
-  width: 1500px;
-  height: 400px;
-  position: absolute;
-  bottom: 0;
+.game__field {
+  width: 100%;
+  height: 100%;
+  margin-top: 60px;
+  position: relative;
 }
 
-/* alert */
-.alert {
-  display: none;
+.pop-up {
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex-wrap: wrap;
   width: 600px;
   height: 200px;
   background-color: rgba(0, 0, 0, 0.5);
   border-radius: 20px;
   text-align: center;
-  position: absolute;
-  bottom: 100px;
-  left: calc(50% - 600px / 2);
+  margin: auto;
+  transform: translateY(-150%);
 }
 
-.alert .replay_btn {
-  margin-top: 30px;
+.pop-up--hide {
+  display: none;
 }
 
-.alert .alert_txt {
+.pop-up__txt {
   width: 600px;
   text-align: center;
   color: white;
   font-size: 42px;
-  margin-top: 0;
-  margin-bottom: 30px;
+  margin-top: 20px;
+}
+
+.carrot,
+.bug {
+  transition: transform 100ms ease-in;
+  cursor: pointer;
+}
+
+.carrot:hover,
+.bug:hover {
+  transform: scale(1.1);
 }
