@@ -28,8 +28,8 @@ export class Field {
 
   _addItem(className, count, imgPath) {
     const x1 = 0;
-    const y1 = 0;
     const x2 = this.fieldRect.width - CARROT_SIZE;
+    const y1 = 0;
     const y2 = this.fieldRect.height - CARROT_SIZE;
     for (let i = 0; i < count; i++) {
       const item = document.createElement('img');

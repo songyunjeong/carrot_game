@@ -3,7 +3,7 @@
 export default class Popup {
   constructor() {
     this.popUp = document.querySelector('.pop-up');
-    this.popUpTxt = document.querySelector('.pop-up__txt');
+    this.popUpTxt = document.querySelector('.pop-up__message');
     this.popUpRefresh = document.querySelector('.pop-up__refresh');
     this.popUpRefresh.addEventListener('click', () => {
       this.onClick && this.onClick();
@@ -17,10 +17,10 @@ export default class Popup {
 
   showWithText(text) {
     this.popUpTxt.innerText = text;
-    this.popUp.classList.remove('pop-up--hide');
+    this.popUp.classList.remove('hide');
   }
 
   hide() {
-    this.popUp.classList.add('pop-up--hide');
+    this.popUp.classList.add('hide');
   }
 }

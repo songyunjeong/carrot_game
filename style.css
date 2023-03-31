@@ -90,11 +90,11 @@ header {
   transform: translateY(-150%);
 }
 
-.pop-up--hide {
+.hide {
   display: none;
 }
 
-.pop-up__txt {
+.pop-up__message {
   width: 600px;
   text-align: center;
   color: white;
