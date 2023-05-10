@@ -1,6 +1,6 @@
-'use strict';
-import { Field, ItemType } from './field.js';
-import * as sound from './sound.js';
+"use strict";
+import { Field, ItemType } from "./field.js";
+import * as sound from "./sound.js";
 
 export class GameBuilder {
   withGameDuration(duration) {
@@ -28,9 +28,9 @@ export class GameBuilder {
 }
 
 export const Reason = Object.freeze({
-  win: 'win',
-  lose: 'lose',
-  cancle: 'cancel',
+  win: "win",
+  lose: "lose",
+  cancle: "cancel",
 });
 
 class Game {
@@ -39,10 +39,10 @@ class Game {
     this.carrotCount = carrotCount;
     this.bugCount = bugCount;
 
-    this.gameTimer = document.querySelector('.game__timer');
-    this.gameScore = document.querySelector('.game__score');
-    this.gameBtn = document.querySelector('.game__btn');
-    this.gameBtn.addEventListener('click', () => {
+    this.gameTimer = document.querySelector(".game__timer");
+    this.gameScore = document.querySelector(".game__score");
+    this.gameBtn = document.querySelector(".game__btn");
+    this.gameBtn.addEventListener("click", () => {
       if (this.started) {
         this.stop(Reason.cancle);
       } else {
@@ -87,27 +87,27 @@ class Game {
       this.score++;
       this.updateScoreBoard();
       if (this.score == this.carrotCount) {
-        this.finish(Reason.win);
+        this.stop(Reason.win);
       }
     } else if (item === ItemType.bug) {
-      this.finish(Reason.lose);
+      this.stop(Reason.lose);
     }
   };
 
   showStopBtn() {
-    const icon = this.gameBtn.querySelector('.fa-solid');
-    icon.classList.add('fa-stop');
-    icon.classList.remove('fa-play');
-    this.gameBtn.style.visibility = 'visible';
+    const icon = this.gameBtn.querySelector(".fa-solid");
+    icon.classList.add("fa-stop");
+    icon.classList.remove("fa-play");
+    this.gameBtn.style.visibility = "visible";
   }
 
   hideGameButton() {
-    this.gameBtn.style.visibility = 'hidden';
+    this.gameBtn.style.visibility = "hidden";
   }
 
   showTimerAndScore() {
-    this.gameTimer.style.visibility = 'visible';
-    this.gameScore.style.visibility = 'visible';
+    this.gameTimer.style.visibility = "visible";
+    this.gameScore.style.visibility = "visible";
   }
 
   startGameTimer() {
@@ -132,7 +132,7 @@ class Game {
     const seconds = time % 60;
     this.gameTimer.innerText = `${minutes
       .toString()
-      .padStart(2, '0')} : ${seconds.toString().padStart(2, '0')}`;
+      .padStart(2, "0")} : ${seconds.toString().padStart(2, "0")}`;
   }
 
   initGame() {
